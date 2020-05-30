@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Memory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace WaiterSummoner.Services
 {
-    public static class SummonNameGenerator
+    public class SummonNameGeneratorService
     {
         #region Props
-        private static HashSet<string> AVAILABLE_SUMMON_NAMES = new HashSet<string>
+        private readonly HashSet<string> AVAILABLE_SUMMON_NAMES = new HashSet<string>
         {
             "Consagrado",
             "Abençoado",
@@ -76,11 +78,34 @@ namespace WaiterSummoner.Services
         };
         #endregion
 
-        public static string GetRandomSummonName()
+        public IMemoryCache MemoryCache { get; }
+
+        public SummonNameGeneratorService(IMemoryCache memoryCache)
+        {
+            MemoryCache = memoryCache;
+        }
+
+        public Task<string> GetRandomSummonNameAsync()
+        {
+            var cacheKey = "summonName";
+            var cacheExpirationTime = TimeSpan.FromSeconds(5);
+
+            return MemoryCache.GetOrCreateAsync(cacheKey, async e =>
+            {
+                e.SetOptions(new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = cacheExpirationTime
+                });
+
+                return GenerateRandomName();
+            });
+        }
+
+        public string GenerateRandomName()
         {
             var random = new Random();
-            var maximumCount = AVAILABLE_SUMMON_NAMES.Count;
-            return AVAILABLE_SUMMON_NAMES.ElementAt(random.Next(0, maximumCount));
+            var maximumValue = this.AVAILABLE_SUMMON_NAMES.Count - 1;
+            return this.AVAILABLE_SUMMON_NAMES.ElementAt(random.Next(0, maximumValue));
         }
     }
 }

@@ -1,0 +1,22 @@
+﻿@page "/"
+
+@using WaiterSummoner.Services
+@inject SummonNameGeneratorService SummonNameGeneratorService
+
+@if (currentSummonName == null)
+{
+    <p><em>Carregando...</em></p>
+}
+else
+{
+    <h1>Bom dia, meu <b>@currentSummonName</b></h1>
+}
+
+@code {
+    private string currentSummonName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentSummonName = await SummonNameGeneratorService.GetRandomSummonNameAsync();
+    }
+}
