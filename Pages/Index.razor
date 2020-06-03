@@ -9,14 +9,17 @@
 }
 else
 {
-    <h1>Bom dia, meu <b>@currentSummonName</b></h1>
+    <h1>Bom dia, meu <b id="current-summon-name">@currentSummonName</b></h1>
+    <p id="current-phrase">@currentPhrase</p>
 }
 
 @code {
     private string currentSummonName;
+    private string currentPhrase;
 
     protected override async Task OnInitializedAsync()
     {
         currentSummonName = await SummonNameGeneratorService.GetRandomSummonNameAsync();
+        currentPhrase = await SummonNameGeneratorService.GetRandomMotivationalPhraseAsync();
     }
 }
