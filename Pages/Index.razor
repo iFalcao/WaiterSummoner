@@ -1,25 +1,26 @@
 ﻿@page "/"
 
 @using WaiterSummoner.Services
-@inject SummonNameGeneratorService SummonNameGeneratorService
+@inject CrawlerService CrawlerService
+@inject DailyWordGeneratorService DailyWordGeneratorService
 
-@if (currentSummonName == null)
+@if (dailyWord == null)
 {
     <p><em>Carregando...</em></p>
 }
 else
 {
-    <h1>Bom dia, meu <b id="current-summon-name">@currentSummonName</b></h1>
-    <p id="current-phrase">@currentPhrase</p>
+    <h1>Bom dia, meu <b id="current-summon-name">@dailyWord</b></h1>
+    <p id="current-phrase">@dailyPhrase</p>
 }
 
 @code {
-    private string currentSummonName;
-    private string currentPhrase;
+    private string dailyWord;
+    private string dailyPhrase;
 
     protected override async Task OnInitializedAsync()
     {
-        currentSummonName = await SummonNameGeneratorService.GetRandomSummonNameAsync();
-        currentPhrase = await SummonNameGeneratorService.GetRandomMotivationalPhraseAsync();
+        dailyWord = await DailyWordGeneratorService.GetRandomWordAsync();
+        dailyPhrase = await CrawlerService.GetDailyMotivationalPhraseAsync();
     }
 }

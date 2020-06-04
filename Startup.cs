@@ -23,7 +23,8 @@ namespace WaiterSummoner
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddMemoryCache();
-            services.AddSingleton<SummonNameGeneratorService>();
+            services.AddSingleton<CrawlerService>();
+            services.AddSingleton<DailyWordGeneratorService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
